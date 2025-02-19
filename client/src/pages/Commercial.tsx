@@ -142,9 +142,10 @@ export default function Commercial() {
         };
       }
 
-      const response = await fetch(
-        `https://raw.githubusercontent.com/atlasgrowth/Arkansasplumbers/main/data/processed/businesses/${siteId || 'default'}.json`
-      );
+      const urlParams = new URLSearchParams(window.location.search);
+      const siteId = urlParams.get('site_id');
+      const baseUrl = `https://raw.githubusercontent.com/atlasgrowth/Arkansasplumbers/main/data/processed/businesses/${siteId || 'default'}.json`;
+      const response = await fetch(baseUrl);
       
       if (!response.ok) {
         throw new Error('Failed to load business data');
