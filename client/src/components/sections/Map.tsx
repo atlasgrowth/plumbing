@@ -20,7 +20,7 @@ export function Map({ businessData }: MapProps) {
       <div className="container mx-auto max-w-7xl px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="h-[400px] relative group">
-            {staticMapUrl ? (
+            {mapUrl ? (
               <div className="relative w-full h-full rounded-lg overflow-hidden shadow-lg transition-transform duration-300 group-hover:scale-[1.02]">
                 <img
                   src={mapUrl}
