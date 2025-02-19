@@ -37,7 +37,8 @@ export function Services({ businessData }: ServicesProps) {
       description: "Complete plumbing solutions for your home including repairs, installations, and maintenance",
       image: "https://assets.cdn.filesafe.space/jcEKoOF2TKiEyPXqmAdw/media/64fc0ee7c42c8139caa59f04.jpeg",
       color: "#0B3D91",
-      link: "/residential"
+      link: "/residential",
+      type: "page"
     },
     {
       icon: Building2,
@@ -45,7 +46,8 @@ export function Services({ businessData }: ServicesProps) {
       description: "Professional plumbing services for businesses, restaurants, and commercial properties",
       image: "https://www.pmmag.com/ext/resources/Issues/2024/08-August/Columns/PM-0824-Codes-Corner-column-GettyImages-1722486042.jpg?1723468264",
       color: "#051C45",
-      link: "/commercial"
+      link: "/commercial",
+      type: "page"
     },
     {
       icon: Clock,
@@ -53,7 +55,8 @@ export function Services({ businessData }: ServicesProps) {
       description: "24/7 emergency plumbing response when you need help fast",
       image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=800&auto=format&fit=crop&q=80",
       color: "#FF7A00",
-      link: "#chat-widget"
+      link: "#chat-widget",
+      type: "scroll"
     }
   ];
 
@@ -96,10 +99,13 @@ export function Services({ businessData }: ServicesProps) {
                   variant="outline"
                   className="w-full bg-white/10 backdrop-blur hover:bg-white/20 border-white text-white transition-all duration-300 group-hover:scale-105"
                   onClick={() => {
-                    if (service.link.startsWith('#')) {
+                    if (service.type === 'scroll') {
                       document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                      window.location.assign(service.link);
+                    } else if (service.type === 'page') {
+                      const urlParams = new URLSearchParams(window.location.search);
+                      const siteId = urlParams.get('site_id');
+                      const newPath = service.link + (siteId ? `?site_id=${siteId}` : '');
+                      window.location.href = newPath;
                     }
                   }}
                 >
