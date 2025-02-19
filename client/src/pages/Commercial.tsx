@@ -119,7 +119,7 @@ export default function Commercial() {
   const { data: businessData, isLoading, error } = useQuery<BusinessData>({
     queryKey: ['business-data'],
     queryFn: async () => {
-      const response = await fetch('/api/business-data');
+      const response = await fetch('http://0.0.0.0:5000/api/business-data');
       if (!response.ok) {
         throw new Error('Failed to load business data');
       }
