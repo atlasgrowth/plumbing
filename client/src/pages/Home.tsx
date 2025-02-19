@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { Header } from "@/components/Header";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
 import { Services } from "@/components/sections/Services";
@@ -41,6 +42,36 @@ const FALLBACK_DATA: BusinessData = {
   ]
 };
 
+// Helper function to safely convert to number
+function safeParseFloat(value: any): number | undefined {
+  if (value === undefined || value === null) return undefined;
+
+  if (typeof value === 'number') return value;
+
+  if (typeof value === 'string') {
+    // Remove any non-numeric characters except decimal point
+    const cleanedValue = value.replace(/[^\d.]/g, '');
+    const parsed = parseFloat(cleanedValue);
+
+    // If parsing results in NaN, return undefined instead
+    return !isNaN(parsed) ? parsed : undefined;
+  }
+
+  return undefined;
+}
+
+// Helper function to safely parse JSON string
+function safeParseJSON(jsonString: any): any {
+  if (typeof jsonString !== 'string') return jsonString;
+
+  try {
+    return JSON.parse(jsonString);
+  } catch (e) {
+    console.warn('Failed to parse JSON string:', jsonString);
+    return {};
+  }
+}
+
 const getBusinessData = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const siteId = urlParams.get('site_id');
@@ -57,7 +88,7 @@ const getBusinessData = async () => {
 
   try {
     const response = await fetch(
-      `https://raw.githubusercontent.com/atlasgrowtth/Arkansasplumbers/main/data/processed/businesses/${siteId}.json`
+      `https://raw.githubusercontent.com/atlasgrowth/Arkansasplumbers/main/data/processed/businesses/${siteId}.json`
     );
 
     if (!response.ok) {
@@ -68,11 +99,45 @@ const getBusinessData = async () => {
       throw new Error(`Failed to load business data: ${response.status}`);
     }
 
-    const data = await response.json();
-    const parsed = businessDataSchema.safeParse(data);
+    const rawData = await response.json();
+    console.log('Raw data from API:', rawData);
+
+    // Handle missing basic_info
+    if (!rawData.basic_info) {
+      console.warn('Missing basic_info in response, using fallback');
+      return FALLBACK_DATA;
+    }
+
+    // Normalize data types before validation
+    const normalizedData = {
+      ...rawData,
+      basic_info: {
+        ...rawData.basic_info,
+        // Safely convert rating to number
+        rating: safeParseFloat(rawData.basic_info.rating),
+
+        // Safely parse working_hours
+        working_hours: safeParseJSON(rawData.basic_info.working_hours),
+
+        // Safely convert coordinates 
+        latitude: safeParseFloat(rawData.basic_info.latitude),
+        longitude: safeParseFloat(rawData.basic_info.longitude),
+      }
+    };
+
+    console.log('Normalized data:', normalizedData);
+    const parsed = businessDataSchema.safeParse(normalizedData);
 
     if (!parsed.success) {
       console.error('Data validation error:', parsed.error);
+      console.error('Problematic data:', normalizedData);
+
+      // If we're in development, return fallback data instead of throwing
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Using fallback data due to validation error');
+        return FALLBACK_DATA;
+      }
+
       throw new Error('Invalid business data format received');
     }
 
@@ -119,6 +184,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      <Header businessData={businessData} />
       <Hero businessData={businessData} />
       <About businessData={businessData} />
       <Services businessData={businessData} />
