@@ -56,10 +56,17 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client
-  const PORT = 5000;
-  server.listen(PORT, "0.0.0.0", () => {
-    log(`serving on port ${PORT}`);
-  });
+  const PORT = process.env.PORT || 5000;
+  const startServer = async () => {
+    try {
+      server.listen(PORT, "0.0.0.0", () => {
+        log(`serving on port ${PORT}`);
+      });
+    } catch (err) {
+      console.error('Failed to start server:', err);
+      process.exit(1);
+    }
+  };
+  
+  startServer();
 })();
