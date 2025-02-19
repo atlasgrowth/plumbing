@@ -183,7 +183,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-16">
       <Header businessData={businessData} />
       <Hero businessData={businessData} />
       <About businessData={businessData} />
