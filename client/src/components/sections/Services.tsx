@@ -105,7 +105,10 @@ export function Services({ businessData }: ServicesProps) {
                       const urlParams = new URLSearchParams(window.location.search);
                       const siteId = urlParams.get('site_id');
                       const newPath = service.link + (siteId ? `?site_id=${siteId}` : '');
-                      window.location.href = newPath;
+                      // Check if we're on GitHub Pages
+                      const isGitHubPages = window.location.hostname.includes('github.io');
+                      const basePath = isGitHubPages ? '/plumbing' : '';
+                      window.location.href = basePath + newPath;
                     }
                   }}
                 >
