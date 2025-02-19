@@ -8,15 +8,6 @@ interface ServicesProps {
   businessData: BusinessData;
 }
 
-const createLink = (path: string): string => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const siteId = urlParams.get('site_id');
-  const isGitHubPages = window.location.pathname.includes('/plumbing');
-  const basePath = isGitHubPages ? '/plumbing' : '';
-  return `${basePath}${path}${siteId ? `?site_id=${siteId}` : ''}`;
-};
-
-
 export function Services({ businessData }: ServicesProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -69,6 +60,21 @@ export function Services({ businessData }: ServicesProps) {
     }
   ];
 
+  // Moved navigation logic to a client-side handler function
+  const handleNavigation = (service: {type: string, link: string}) => {
+    if (service.type === 'scroll') {
+      document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
+    } else if (service.type === 'page') {
+      // Create the link only when needed (client-side)
+      const urlParams = new URLSearchParams(window.location.search);
+      const siteId = urlParams.get('site_id');
+      const isGitHubPages = window.location.pathname.includes('/plumbing');
+      const basePath = isGitHubPages ? '/plumbing' : '';
+      const fullPath = `${basePath}${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
+      window.location.href = fullPath;
+    }
+  };
+
   return (
     <section className="bg-white py-20 md:py-40 overflow-hidden">
       <div className="container mx-auto max-w-7xl px-4">
@@ -107,13 +113,7 @@ export function Services({ businessData }: ServicesProps) {
                 <Button
                   variant="outline"
                   className="w-full bg-white/10 backdrop-blur hover:bg-white/20 border-white text-white transition-all duration-300 group-hover:scale-105"
-                  onClick={() => {
-                    if (service.type === 'scroll') {
-                      document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
-                    } else if (service.type === 'page') {
-                      window.location.href = createLink(service.link);
-                    }
-                  }}
+                  onClick={() => handleNavigation(service)}
                 >
                   Learn More
                 </Button>
