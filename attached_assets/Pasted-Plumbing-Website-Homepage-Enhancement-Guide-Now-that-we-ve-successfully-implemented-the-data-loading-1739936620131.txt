@@ -1,5 +1,5 @@
 Plumbing Website Homepage Enhancement Guide
-Now that we've successfully implemented the data loading, display functionality, and navigation, it's time to focus exclusively on enhancing the design aesthetics and adding engaging animations. The current design lacks visual appeal and movement, making it feel static and outdated.
+Now that we've successfully implemented the data loading, display functionality, and navigation, it's time to focus exclusily on enhancing the design aesthetics and adding engaging animations. The current design lacks visual appeal and movement, making it feel static and outdated.
 Header Enhancement
 Current Issues:
 
