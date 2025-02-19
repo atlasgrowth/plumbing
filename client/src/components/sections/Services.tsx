@@ -1,58 +1,132 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Wrench, Droplet, FlameKindling } from "lucide-react";
+import { Home, Building2, Clock } from "lucide-react";
 import type { BusinessData } from "@shared/schema";
+import { useEffect, useRef } from "react";
 
 interface ServicesProps {
   businessData: BusinessData;
 }
 
-const DEFAULT_SERVICES = [
-  {
-    icon: Wrench,
-    title: "Emergency Repairs",
-    description: "24/7 emergency plumbing services for when you need us most. Fast response times and reliable solutions."
-  },
-  {
-    icon: Droplet,
-    title: "Drain Cleaning",
-    description: "Professional drain cleaning services to clear clogs and prevent future blockages. State-of-the-art equipment."
-  },
-  {
-    icon: FlameKindling,
-    title: "Water Heater Services",
-    description: "Installation, repair, and maintenance of water heaters. Expert service for both traditional and tankless systems."
-  }
-];
-
 export function Services({ businessData }: ServicesProps) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-fade-in');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const services = [
+    {
+      icon: Home,
+      title: "Residential Services",
+      description: "Complete plumbing solutions for your home including repairs, installations, and maintenance",
+      image: "https://images.unsplash.com/photo-1585128903994-9788298932e7?w=800&auto=format&fit=crop&q=80",
+      color: "#0B3D91",
+      link: "/residential"
+    },
+    {
+      icon: Building2,
+      title: "Commercial Services",
+      description: "Professional plumbing services for businesses, restaurants, and commercial properties",
+      image: "https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=800&auto=format&fit=crop&q=80",
+      color: "#051C45",
+      link: "/commercial"
+    },
+    {
+      icon: Clock,
+      title: "Emergency Services",
+      description: "24/7 emergency plumbing response when you need help fast",
+      image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=800&auto=format&fit=crop&q=80",
+      color: "#FF7A00",
+      link: "#chat-widget"
+    }
+  ];
+
   return (
-    <section className="bg-white py-20 md:py-40">
+    <section className="bg-white py-20 md:py-40 overflow-hidden">
       <div className="container mx-auto max-w-7xl px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           Our Services
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {DEFAULT_SERVICES.map((service, index) => (
+        <div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 opacity-0"
+          ref={sectionRef}
+        >
+          {services.map((service, index) => (
             <Card
               key={index}
-              className="p-6 transition-shadow hover:shadow-lg border border-gray-200"
+              className="group relative overflow-hidden transition-all duration-500 hover:shadow-2xl"
+              style={{
+                animationDelay: `${index * 200}ms`,
+                borderColor: service.color
+              }}
             >
-              <service.icon className="w-12 h-12 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-4">{service.title}</h3>
-              <p className="text-gray-600 mb-6">{service.description}</p>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Learn More
-              </Button>
+              <div className="absolute inset-0 overflow-hidden">
+                <div
+                  className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+                  style={{
+                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url(${service.image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}
+                />
+              </div>
+
+              <div className="relative p-6 text-white h-full flex flex-col">
+                <service.icon className="w-12 h-12 mb-4 transition-transform duration-300 group-hover:scale-110" />
+                <h3 className="text-xl font-bold mb-4">{service.title}</h3>
+                <p className="text-gray-100 mb-6 flex-grow">{service.description}</p>
+                <Button
+                  variant="outline"
+                  className="w-full bg-white/10 backdrop-blur hover:bg-white/20 border-white text-white transition-all duration-300 group-hover:scale-105"
+                  onClick={() => {
+                    if (service.link.startsWith('#')) {
+                      document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      window.location.href = service.link;
+                    }
+                  }}
+                >
+                  Learn More
+                </Button>
+              </div>
             </Card>
           ))}
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+      `}</style>
     </section>
   );
 }
