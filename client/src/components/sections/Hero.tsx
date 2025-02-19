@@ -36,16 +36,31 @@ export function Hero({ businessData }: HeroProps) {
       />
 
       <div className="container mx-auto max-w-7xl h-full px-4 flex flex-col justify-center items-center text-center text-white">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-md">
+        <h1 
+          className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-md"
+          style={{
+            animation: 'fadeInDown 0.8s ease-out'
+          }}
+        >
           {name}
         </h1>
 
-        <h2 className="text-xl md:text-2xl mb-8 drop-shadow-md">
+        <h2 
+          className="text-xl md:text-2xl mb-8 drop-shadow-md"
+          style={{
+            animation: 'fadeInUp 0.8s ease-out 0.2s backwards'
+          }}
+        >
           Professional Plumbing Services {city ? `in ${city}` : ''}
         </h2>
 
         {rating && (
-          <div className="flex items-center gap-1 mb-8">
+          <div 
+            className="flex items-center gap-1 mb-8"
+            style={{
+              animation: 'fadeIn 0.8s ease-out 0.4s backwards'
+            }}
+          >
             {[...Array(5)].map((_, i) => {
               // For whole stars
               if (i < Math.floor(rating)) {
@@ -64,11 +79,16 @@ export function Hero({ businessData }: HeroProps) {
           </div>
         )}
 
-        <div className="flex flex-col md:flex-row gap-4">
+        <div 
+          className="flex flex-col md:flex-row gap-4"
+          style={{
+            animation: 'fadeInUp 0.8s ease-out 0.6s backwards'
+          }}
+        >
           {phone && (
             <Button
               size="lg"
-              className="bg-[#0A2F73] hover:bg-[#092861] text-white shadow-lg"
+              className="bg-[#0A2F73] hover:bg-[#092861] text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl"
               onClick={() => window.location.href = `tel:${phone}`}
             >
               <Phone className="mr-2 h-4 w-4" />
@@ -78,13 +98,51 @@ export function Hero({ businessData }: HeroProps) {
 
           <Button
             size="lg"
-            className="bg-[#FF7A00] hover:bg-[#e66e00] text-white shadow-lg"
+            className="bg-[#FF7A00] hover:bg-[#e66e00] text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl animate-float"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Request Service
           </Button>
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
+
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
     </section>
   );
 }
