@@ -43,7 +43,7 @@ export function Services({ businessData }: ServicesProps) {
       icon: Building2,
       title: "Commercial Services",
       description: "Professional plumbing services for businesses, restaurants, and commercial properties",
-      image: "https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=800&auto=format&fit=crop&q=80",
+      image: "https://www.pmmag.com/ext/resources/Issues/2024/08-August/Columns/PM-0824-Codes-Corner-column-GettyImages-1722486042.jpg?1723468264",
       color: "#051C45",
       link: "/commercial"
     },
