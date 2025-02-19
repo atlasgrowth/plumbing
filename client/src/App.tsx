@@ -11,9 +11,9 @@ import Commercial from "@/pages/Commercial";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/residential" component={Residential} />
-      <Route path="/commercial" component={Commercial} />
+      <Route path="/plumbing/" component={Home} />
+      <Route path="/plumbing/residential" component={Residential} />
+      <Route path="/plumbing/commercial" component={Commercial} />
       <Route component={NotFound} />
     </Switch>
   );
