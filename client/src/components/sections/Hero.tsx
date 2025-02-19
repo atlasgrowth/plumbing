@@ -25,13 +25,11 @@ export function Hero({ businessData }: HeroProps) {
   const encodedSvg = btoa(waterPatternSvg);
 
   return (
-    <section className="relative h-[80vh] md:h-[60vh] bg-gradient-to-r from-[#0B3D91] to-[#1E90FF] overflow-hidden">
-      {/* Water texture overlay - using a simpler pattern */}
+    <section className="relative h-[80vh] md:h-[60vh] overflow-hidden">
       <div 
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url("data:image/svg+xml;base64,${encodedSvg}")`,
-          backgroundRepeat: 'repeat'
+          backgroundImage: `linear-gradient(rgba(11, 61, 145, 0.85), rgba(30, 144, 255, 0.75)), url("https://assets.cdn.filesafe.space/A9rd4HdLD0sTvRuuQFZl/media/651501775cf2e93f16638cf9.jpeg")`,
         }}
       />
 
