@@ -119,28 +119,10 @@ export default function Commercial() {
   const { data: businessData, isLoading, error } = useQuery<BusinessData>({
     queryKey: ['business-data'],
     queryFn: async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const siteId = urlParams.get('site_id');
-      
-      if (!siteId && process.env.NODE_ENV === 'development') {
-        return FALLBACK_DATA;
-      }
-      
-      if (!siteId) {
-        throw new Error('Please provide a site_id parameter in the URL');
-      }
-
-      const response = await fetch(
-        `https://raw.githubusercontent.com/atlasgrowth/Arkansasplumbers/main/data/processed/businesses/${siteId}.json`
-      );
-
+      const response = await fetch('/api/business-data');
       if (!response.ok) {
-        if (response.status === 404) {
-          return FALLBACK_DATA;
-        }
-        throw new Error(`Failed to load business data: ${response.status}`);
+        throw new Error('Failed to load business data');
       }
-
       return response.json();
     },
     retry: false,

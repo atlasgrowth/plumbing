@@ -99,7 +99,7 @@ export function Services({ businessData }: ServicesProps) {
                     if (service.link.startsWith('#')) {
                       document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
                     } else {
-                      window.location.href = '/commercial';
+                      window.location.href = service.link;
                     }
                   }}
                 >
