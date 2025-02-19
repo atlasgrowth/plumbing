@@ -103,9 +103,6 @@ export default function Residential() {
           }
         };
       }
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const siteId = urlParams.get('site_id');
       const baseUrl = `https://raw.githubusercontent.com/atlasgrowth/Arkansasplumbers/main/data/processed/businesses/${siteId || 'default'}.json`;
       const response = await fetch(baseUrl);
       
