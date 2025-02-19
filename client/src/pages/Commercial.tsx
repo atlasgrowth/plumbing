@@ -119,10 +119,37 @@ export default function Commercial() {
   const { data: businessData, isLoading, error } = useQuery<BusinessData>({
     queryKey: ['business-data'],
     queryFn: async () => {
-      const response = await fetch('http://0.0.0.0:5000/api/business-data');
+      const urlParams = new URLSearchParams(window.location.search);
+      const siteId = urlParams.get('site_id');
+      
+      if (!siteId && process.env.NODE_ENV === 'development') {
+        return {
+          basic_info: {
+            name: "Arkansas Professional Plumbing",
+            city: "Little Rock",
+            phone: "(501) 555-0123",
+            rating: 4.8,
+            working_hours: {
+              "Monday": "8:00 AM - 5:00 PM",
+              "Tuesday": "8:00 AM - 5:00 PM",
+              "Wednesday": "8:00 AM - 5:00 PM",
+              "Thursday": "8:00 AM - 5:00 PM",
+              "Friday": "8:00 AM - 5:00 PM"
+            },
+            latitude: 34.7465,
+            longitude: -92.2896
+          }
+        };
+      }
+
+      const response = await fetch(
+        `https://raw.githubusercontent.com/atlasgrowth/Arkansasplumbers/main/data/processed/businesses/${siteId || 'default'}.json`
+      );
+      
       if (!response.ok) {
         throw new Error('Failed to load business data');
       }
+      
       return response.json();
     },
     retry: false,
