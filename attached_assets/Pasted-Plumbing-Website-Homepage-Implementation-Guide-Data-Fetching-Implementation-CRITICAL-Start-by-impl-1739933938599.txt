@@ -1,0 +1,393 @@
+Plumbing Website Homepage Implementation Guide
+Data Fetching Implementation (CRITICAL)
+Start by implementing robust data fetching from GitHub based on the URL parameter:
+javascriptCopy// CRITICAL: This function must be implemented first
+async function fetchBusinessData() {
+  try {
+    // 1. Get site_id from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const siteId = urlParams.get('site_id');
+    
+    if (!siteId) {
+      throw new Error('Missing site_id parameter');
+    }
+    
+    // 2. Fetch data from GitHub repository
+    const response = await fetch(`https://raw.githubusercontent.com/atlasgrowtth/Arkansasplumbers/main/data/processed/businesses/${siteId}.json`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch business data: ${response.status}`);
+    }
+    
+    // 3. Parse JSON response
+    const businessData = await response.json();
+    return businessData;
+    
+  } catch (error) {
+    console.error('Error fetching business data:', error);
+    return null;
+  }
+}
+The site MUST get this data before rendering any components. Show a loading spinner until data is available.
+Homepage Sections
+1. Hero Section
+Create a full-width hero with blue gradient background and subtle texture:
+Design Specifications:
+
+Height: 80vh on desktop, 60vh on mobile
+Background: Linear gradient (#0B3D91 to #1E90FF) with 10% opacity water texture overlay
+Text color: White with subtle text shadow (0px 1px 2px rgba(0,0,0,0.3))
+Content maximum width: 1200px, centered
+
+Content:
+
+H1 Heading: Display business name from businessData.basic_info.name
+Subheading: "Professional Plumbing Services" + city if available in data
+Two buttons side-by-side:
+
+"Call Now" button - Navy background (#0A2F73) displaying actual phone number
+"Request Service" button - Orange background (#FF7A00)
+
+
+Add rating display if rating exists (show gold stars based on value)
+
+Mobile Optimization:
+
+Stack buttons vertically
+Reduce padding by 40%
+Maintain minimum 18px font size for readability
+
+2. About Section
+Create a two-column section (image left, text right):
+Design Specifications:
+
+Background: Light blue (#F0F8FF)
+Padding: 80px top/bottom on desktop, 40px on mobile
+Image: Professional plumber or clean worksite stock photo
+Text column: Left-aligned content with 20px bottom margin between elements
+
+Content Logic:
+javascriptCopyfunction generateAboutContent(businessData) {
+  const businessName = businessData?.basic_info?.name || "Your local plumber";
+  let cityName = "your area";
+  
+  // Try to extract city name from data if available
+  if (businessData?.basic_info?.city && businessData.basic_info.city.length > 0) {
+    cityName = businessData.basic_info.city;
+  }
+  
+  return {
+    heading: `About ${businessName}`,
+    content: `${businessName} provides reliable plumbing services in ${cityName} and surrounding communities. Our experienced technicians are committed to quality workmanship and customer satisfaction. Whether you need emergency repairs, routine maintenance, or new installations, we have the skills and equipment to get the job done right the first time.`
+  };
+}
+Mobile Optimization:
+
+Stack columns (image above text)
+Reduce image size by 30%
+Maintain minimum 16px font size
+
+3. Services Section
+Create a three-column service highlight grid:
+Design Specifications:
+
+Background: White (#FFFFFF)
+Section padding: 80px top/bottom
+Content max-width: 1200px centered
+Column gap: 30px
+Service card design:
+
+White background
+1px light gray border (#E0E0E0)
+8px border radius
+24px padding
+10px bottom margin between elements
+Box shadow on hover: 0px 6px 12px rgba(0,0,0,0.1)
+
+
+
+Content:
+
+Heading: "Our Services" (centered, 36px, bold)
+Three service cards with:
+
+Icon/image at top (plumbing-related icons)
+Service name as H3
+2-3 sentence description
+"Learn More" button (outlined style, blue)
+
+
+
+Standard Services (if none specified in data):
+
+Emergency Repairs
+Drain Cleaning
+Water Heater Services
+
+Mobile Optimization:
+
+Stack cards vertically
+Full-width cards on mobile
+Maintain 24px padding within cards
+
+4. Reviews Section
+Create a testimonial carousel using actual review data:
+Design Specifications:
+
+Background: Deep blue gradient (#0A2F73 to #1E5799)
+Text color: White
+Padding: 80px top/bottom
+Review card:
+
+White background (#FFFFFF)
+Text color: Dark gray (#333333)
+8px border radius
+24px padding
+Box shadow: 0px 4px 8px rgba(0,0,0,0.1)
+Quote marks as design element (60px, light gray)
+
+
+
+Content Logic:
+javascriptCopyfunction getReviewsToDisplay(businessData) {
+  const reviews = businessData?.five_star_reviews || [];
+  
+  // If no reviews, return empty array
+  if (reviews.length === 0) return [];
+  
+  // Sort by date (newest first) and take up to 5
+  return reviews
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
+}
+
+function formatReviewDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {year: 'numeric', month: 'long'});
+}
+Review Display Rules:
+
+If 0 reviews: Hide section completely
+If 1-2 reviews: Show static display (no carousel)
+If 3+ reviews: Show carousel with navigation arrows
+Always show "Read All Reviews" button below carousel if reviews exist
+
+Mobile Optimization:
+
+Single card view on mobile
+Swipe navigation for mobile
+Reduced padding (40px top/bottom)
+
+5. Map Section
+Create a simple map display with business information:
+Design Specifications:
+
+Background: Light gray (#F5F7FA)
+Padding: 60px top/bottom
+Two-column layout (map left, text right)
+Map size: 500px × 400px on desktop
+Map styling: Custom-styled Google Map with brand colors
+
+Content:
+
+Map centered on business coordinates (from businessData.basic_info.latitude and businessData.basic_info.longitude)
+Business marker with business name
+Right column:
+
+"Service Area" heading
+Business name
+Service description mentioning city if available
+Business hours summary from businessData.basic_info.working_hours
+Phone number with call icon
+
+
+
+Mobile Optimization:
+
+Stack columns (map above text)
+Full-width map (350px height)
+Maintain text size and spacing
+
+6. Contact Form
+Create a simple contact form section:
+Design Specifications:
+
+Background: White (#FFFFFF)
+Padding: 80px top/bottom
+Maximum width: 800px centered
+Form fields:
+
+Light gray background (#F5F7FA)
+1px border (#E0E0E0)
+8px border radius
+12px padding
+16px font size
+24px bottom margin
+
+
+
+Content:
+
+Heading: "Contact Us" (centered, 36px)
+Subheading: Mention business name and responsiveness
+Form fields:
+
+Name (required)
+Phone (required)
+Email
+Service Needed (dropdown)
+Message (textarea)
+
+
+Submit button:
+
+Orange background (#FF7A00)
+White text
+16px font size
+14px padding
+Full width on mobile, 200px on desktop
+
+
+
+Mobile Optimization:
+
+Stack all elements vertically
+Increase form field height by 10%
+Full-width submit button
+
+7. Footer
+Create a simple three-column footer:
+Design Specifications:
+
+Background: Dark blue (#0A2F73)
+Text color: White
+Padding: 60px top, 40px bottom
+Three equal columns on desktop
+Bottom copyright bar:
+
+Darker blue background (#051C45)
+20px padding
+Centered text
+14px font size
+
+
+
+Content:
+
+Column 1: Business information
+
+Business name (in bold)
+Phone number (clickable)
+Hours summary (e.g., "Open Mon-Fri 8am-5pm")
+
+
+Column 2: Quick Links
+
+Home, Services, About, Contact links
+
+
+Column 3: Service Areas
+
+Mention city and surrounding areas if city available
+Otherwise general "Serving all of [Region]" text
+
+
+Copyright text:
+
+Current year, business name
+"All Rights Reserved"
+
+
+
+Mobile Optimization:
+
+Stack columns vertically
+Reduce padding to 40px top, 30px bottom
+Add 20px spacing between columns
+
+Styling Guidelines
+Color Palette:
+
+Primary Blue: #0B3D91
+Secondary Blue: #1E90FF
+Accent Orange: #FF7A00
+Dark Blue: #0A2F73
+White: #FFFFFF
+Light Gray: #F5F7FA
+Dark Gray: #333333
+Border Gray: #E0E0E0
+
+Typography:
+
+Headings: Montserrat, Bold (700)
+Body: Open Sans, Regular (400)
+Base font size: 16px
+Line height: 1.6
+Heading sizes:
+
+H1: 48px desktop, 32px mobile
+H2: 36px desktop, 28px mobile
+H3: 24px desktop, 20px mobile
+H4: 18px desktop, 16px mobile
+
+
+
+Spacing:
+
+Section padding: 80px top/bottom (desktop), 40px (mobile)
+Container max-width: 1200px with auto margins
+Grid gap: 30px desktop, 20px mobile
+Component padding: 24px
+Button padding: 14px horizontal, 12px vertical
+
+Buttons:
+
+Primary: Orange background, white text
+Secondary: Blue background, white text
+Outlined: Transparent background, blue border, blue text
+Hover effect: Darken by 10%
+Border radius: 4px
+Font weight: 600 (semibold)
+
+Special Considerations
+1. Handling Missing Data
+javascriptCopy// Extract business name or use fallback
+const businessName = businessData?.basic_info?.name || "Professional Plumbing Services";
+
+// Extract phone or hide call button
+const phoneNumber = businessData?.basic_info?.phone;
+const showCallButton = Boolean(phoneNumber);
+
+// Extract reviews or hide section
+const reviews = businessData?.five_star_reviews || [];
+const showReviewsSection = reviews.length > 0;
+
+// Extract rating or hide stars
+const rating = businessData?.basic_info?.rating;
+const showRating = rating > 0;
+2. Review Display Logic
+javascriptCopyfunction getReviewDisplayConfig(businessData) {
+  const reviews = businessData?.five_star_reviews || [];
+  const rating = businessData?.basic_info?.rating || 0;
+  
+  return {
+    // Hide section completely if no reviews
+    showSection: reviews.length > 0,
+    
+    // Show static display for 1-2 reviews, carousel for 3+
+    useCarousel: reviews.length >= 3,
+    
+    // Show "See All Reviews" button if 5+ reviews exist
+    showViewAllButton: reviews.length >= 5,
+    
+    // Emphasize rating if it's 4.5 or higher
+    highlightRating: rating >= 4.5,
+    
+    // Format to use for displayed reviews
+    displayReviews: reviews.slice(0, 5).map(review => ({
+      text: review.text,
+      author: review.reviewer_name,
+      date: formatReviewDate(review.date)
+    }))
+  };
+}
