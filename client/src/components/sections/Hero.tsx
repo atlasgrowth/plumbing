@@ -29,7 +29,7 @@ export function Hero({ businessData }: HeroProps) {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(11, 61, 145, 0.85), rgba(30, 144, 255, 0.75)), url("https://assets.cdn.filesafe.space/A9rd4HdLD0sTvRuuQFZl/media/651501775cf2e93f16638cf9.jpeg")`,
+          backgroundImage: `linear-gradient(rgba(11, 61, 145, 0.65), rgba(30, 144, 255, 0.55)), url("/651501775cf2e93f16638cf9.jpeg")`,
         }}
       />
 
