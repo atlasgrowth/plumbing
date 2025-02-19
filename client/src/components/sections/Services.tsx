@@ -11,11 +11,9 @@ interface ServicesProps {
 const createLink = (path: string): string => {
   const urlParams = new URLSearchParams(window.location.search);
   const siteId = urlParams.get('site_id');
-  const newPath = path + (siteId ? `?site_id=${siteId}` : '');
-  // Check if we're on GitHub Pages
-  const isGitHubPages = window.location.hostname.includes('github.io');
+  const isGitHubPages = window.location.pathname.includes('/plumbing');
   const basePath = isGitHubPages ? '/plumbing' : '';
-  return basePath + newPath;
+  return `${basePath}${path}${siteId ? `?site_id=${siteId}` : ''}`;
 };
 
 
