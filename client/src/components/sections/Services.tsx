@@ -8,14 +8,21 @@ interface ServicesProps {
   businessData: BusinessData;
 }
 
+// This function checks the URL for a "site_id".
+// If found, it saves it in localStorage so that it can be reused later.
+// If not, it attempts to retrieve the stored "site_id" from localStorage.
 const createLink = (path: string): string => {
   const urlParams = new URLSearchParams(window.location.search);
-  const siteId = urlParams.get('site_id');
+  let siteId = urlParams.get('site_id');
+  if (siteId) {
+    localStorage.setItem('site_id', siteId);
+  } else {
+    siteId = localStorage.getItem('site_id');
+  }
   const isGitHubPages = window.location.pathname.includes('/plumbing');
   const basePath = isGitHubPages ? '/plumbing' : '';
   return `${basePath}${path}${siteId ? `?site_id=${siteId}` : ''}`;
 };
-
 
 export function Services({ businessData }: ServicesProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
