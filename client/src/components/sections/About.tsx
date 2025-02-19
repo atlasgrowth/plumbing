@@ -31,22 +31,22 @@ export function About({ businessData }: AboutProps) {
   }, []);
 
   return (
-    <section className="bg-gradient-to-b from-[#F0F8FF] to-[#E6F4FF] py-20 md:py-40 overflow-hidden">
+    <section className="bg-gradient-to-br from-blue-50 to-blue-100 py-20 md:py-40 overflow-hidden">
       <div className="container mx-auto max-w-7xl px-4">
         <div 
           className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center opacity-0"
           ref={sectionRef}
         >
-          <div className="relative aspect-video md:aspect-square group">
-            <div className="absolute inset-0 bg-primary/10 rounded-lg transform -rotate-3 scale-95 transition-transform duration-500 group-hover:rotate-0" />
+          <div className="relative aspect-video md:aspect-square group overflow-hidden rounded-xl shadow-lg">
+            <div className="absolute inset-0 bg-primary/10 rounded-xl transform -rotate-3 scale-95 transition-transform duration-500 group-hover:rotate-0" />
             <img
-              src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&auto=format&fit=crop&q=80"
-              alt="Professional plumber at work"
-              className="rounded-lg object-cover w-full h-full shadow-xl transition-all duration-500 transform group-hover:scale-105 relative z-10"
+              src="https://assets.cdn.filesafe.space/2CUu2UzbKL9UUAOvmqJR/media/98146f6b-66e2-4f7a-aed2-59f7a9c8fce4.jpeg"
+              alt="Modern Plumbing Service"
+              className="rounded-xl object-cover w-full h-full shadow-xl transition-all duration-500 transform group-hover:scale-105 relative z-10"
             />
           </div>
 
-          <Card className="p-8 bg-white/80 backdrop-blur border-l-4 border-primary transform transition-all duration-500 hover:translate-y-[-4px] hover:shadow-xl">
+          <Card className="p-8 bg-white/80 backdrop-blur-xl shadow-lg rounded-xl border border-gray-200 transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl">
             <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold text-primary">
                 About {name}

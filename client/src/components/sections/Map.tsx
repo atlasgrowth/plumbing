@@ -9,26 +9,23 @@ interface MapProps {
 export function Map({ businessData }: MapProps) {
   const { name, latitude, longitude, working_hours, phone, city } = businessData.basic_info;
 
-  const mapUrl = latitude && longitude
-    ? `https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_KEY&q=${latitude},${longitude}&zoom=14&maptype=roadmap&style=feature:water|color:0x0b3d91|saturation:-30`
-    : null;
+  // Generate a static map image using OpenStreetMap's static map service
+  const staticMapUrl =
+    latitude && longitude
+      ? `https://staticmap.openstreetmap.de/staticmap.php?center=${latitude},${longitude}&zoom=14&size=600x400&markers=${latitude},${longitude},red-pushpin`
+      : null;
 
   return (
     <section className="bg-[#F5F7FA] py-16 md:py-32">
       <div className="container mx-auto max-w-7xl px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="h-[400px] relative group">
-            {mapUrl ? (
+            {staticMapUrl ? (
               <div className="relative w-full h-full rounded-lg overflow-hidden shadow-lg transition-transform duration-300 group-hover:scale-[1.02]">
-                <iframe
-                  src={mapUrl}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="rounded-lg"
+                <img
+                  src={staticMapUrl}
+                  alt="Map of service area"
+                  className="w-full h-full object-cover rounded-lg"
                 />
                 <div className="absolute inset-0 border-4 border-primary/10 rounded-lg pointer-events-none" />
               </div>
@@ -42,11 +39,11 @@ export function Map({ businessData }: MapProps) {
             )}
           </div>
 
-          <Card className="p-8 shadow-lg transition-transform duration-300 hover:translate-y-[-4px]">
+          <Card className="p-8 shadow-lg transition-transform duration-300 hover:-translate-y-1">
             <h2 className="text-2xl font-bold mb-6 text-primary">Service Area</h2>
-            <h3 className="text-xl font-semibold mb-4">{name}</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">{name}</h3>
 
-            <p className="text-gray-600 mb-8 leading-relaxed">
+            <p className="text-gray-700 mb-8 leading-relaxed">
               Serving {city || "the local area"} and surrounding communities with professional plumbing services.
               We pride ourselves on prompt service and expert solutions for all your plumbing needs.
             </p>
@@ -59,7 +56,10 @@ export function Map({ businessData }: MapProps) {
                 </h4>
                 <div className="space-y-2">
                   {Object.entries(working_hours).map(([day, hours]) => (
-                    <div key={day} className="flex justify-between text-gray-600 hover:bg-gray-50 p-2 rounded-md transition-colors">
+                    <div
+                      key={day}
+                      className="flex justify-between text-gray-700 hover:bg-gray-50 p-2 rounded-md transition-colors"
+                    >
                       <span className="font-medium">{day}</span>
                       <span>{hours}</span>
                     </div>
@@ -73,8 +73,8 @@ export function Map({ businessData }: MapProps) {
                 <div className="p-3 bg-primary/10 rounded-full">
                   <Phone className="h-6 w-6" />
                 </div>
-                <a 
-                  href={`tel:${phone}`} 
+                <a
+                  href={`tel:${phone}`}
                   className="text-lg font-semibold hover:text-primary/80 transition-colors"
                 >
                   {phone}

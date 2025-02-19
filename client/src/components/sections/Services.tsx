@@ -35,7 +35,7 @@ export function Services({ businessData }: ServicesProps) {
       icon: Home,
       title: "Residential Services",
       description: "Complete plumbing solutions for your home including repairs, installations, and maintenance",
-      image: "https://images.unsplash.com/photo-1585128903994-9788298932e7?w=800&auto=format&fit=crop&q=80",
+      image: "https://assets.cdn.filesafe.space/jcEKoOF2TKiEyPXqmAdw/media/64fc0ee7c42c8139caa59f04.jpeg",
       color: "#0B3D91",
       link: "/residential"
     },
