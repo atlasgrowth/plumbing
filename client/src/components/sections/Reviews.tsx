@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import type { BusinessData } from "@shared/schema";
 
 interface ReviewsProps {
@@ -10,126 +10,188 @@ interface ReviewsProps {
 
 export function Reviews({ businessData }: ReviewsProps) {
   const reviews = businessData.five_star_reviews || [];
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [visibleReviews, setVisibleReviews] = useState<number[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
+  // No reviews, no component
   if (reviews.length === 0) {
     return null;
   }
 
-  const useCarousel = reviews.length >= 3;
+  // Determine how many reviews to show based on screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      updateVisibleReviews(activeIndex, mobile);
+    };
 
+    const updateVisibleReviews = (index: number, mobile: boolean) => {
+      if (mobile) {
+        setVisibleReviews([index]);
+      } else {
+        // On desktop, show 3 reviews or fewer if we don't have enough
+        const startIdx = index;
+        const endIdx = Math.min(startIdx + 2, reviews.length - 1);
+        const indices = [];
+
+        for (let i = startIdx; i <= endIdx; i++) {
+          indices.push(i);
+        }
+
+        // If we have fewer than 3 reviews to show, add from the beginning
+        if (indices.length < 3 && reviews.length >= 3) {
+          for (let i = 0; indices.length < 3; i++) {
+            if (!indices.includes(i)) {
+              indices.push(i);
+            }
+          }
+        }
+
+        setVisibleReviews(indices);
+      }
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [activeIndex, reviews.length]);
+
+  // Navigation handlers
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1));
+    const newIndex = activeIndex === 0 ? reviews.length - 1 : activeIndex - 1;
+    setActiveIndex(newIndex);
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === reviews.length - 1 ? 0 : prev + 1));
+    const newIndex = activeIndex === reviews.length - 1 ? 0 : activeIndex + 1;
+    setActiveIndex(newIndex);
   };
 
-  // Water pattern SVG encoded as base64
-  const waterPatternSvg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-      <path d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z" fill="white" fill-opacity="0.05"/>
-      <path d="M20 30C25.5228 30 30 25.5228 30 20C30 14.4772 25.5228 10 20 10C14.4772 10 10 14.4772 10 20C10 25.5228 14.4772 30 20 30Z" fill="white" fill-opacity="0.08"/>
-    </svg>
-  `;
+  // Generate star ratings
+  const renderStars = (count = 5) => {
+    return Array(count).fill(0).map((_, i) => (
+      <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+    ));
+  };
 
   return (
-    <section className="relative bg-gradient-to-r from-[#051C45] to-[#0A2F73] py-20 md:py-40 overflow-hidden">
-      {/* Water pattern overlay */}
-      <div 
-        className="absolute inset-0 opacity-15"
-        style={{
-          backgroundImage: `url("data:image/svg+xml;base64,${btoa(waterPatternSvg)}")`,
-          backgroundRepeat: 'repeat',
-          animation: 'float 20s linear infinite'
-        }}
-      />
+    <section className="relative bg-gradient-to-br from-blue-900 to-indigo-800 py-16 md:py-24 overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-blue-400 blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-indigo-500 blur-3xl" />
+        <div className="absolute top-1/3 left-1/4 w-40 h-40 rounded-full bg-purple-500 blur-3xl" />
+      </div>
 
-      <div className="container mx-auto max-w-7xl px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-12 relative">
-          What Our Customers Say
-        </h2>
+      {/* Content container */}
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            What Our Customers Say
+          </h2>
+          <p className="text-blue-100 max-w-2xl mx-auto">
+            Read honest feedback from our valued customers about their experiences with our services.
+          </p>
+        </div>
 
+        {/* Reviews carousel */}
         <div className="relative">
-          {useCarousel && (
-            <>
-              <Button
-                variant="ghost"
-                className="absolute left-0 top-1/2 -translate-y-1/2 text-white z-10 opacity-75 hover:opacity-100 transition-opacity"
-                onClick={handlePrevious}
-              >
-                <ChevronLeft className="h-8 w-8" />
-              </Button>
-              <Button
-                variant="ghost"
-                className="absolute right-0 top-1/2 -translate-y-1/2 text-white z-10 opacity-75 hover:opacity-100 transition-opacity"
-                onClick={handleNext}
-              >
-                <ChevronRight className="h-8 w-8" />
-              </Button>
-            </>
-          )}
+          {/* Navigation buttons */}
+          <div className="absolute top-1/2 -translate-y-1/2 -left-4 md:-left-8 z-10">
+            <Button 
+              onClick={handlePrevious}
+              variant="ghost" 
+              size="icon"
+              className="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 md:w-12 md:h-12 text-white shadow-lg"
+              aria-label="Previous review"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </Button>
+          </div>
 
-          <div className="flex flex-nowrap overflow-hidden">
-            {reviews.slice(currentIndex, currentIndex + (useCarousel ? 1 : 2)).map((review, index) => (
-              <Card 
-                key={index} 
-                className="flex-shrink-0 w-full md:w-1/2 p-8 mx-4 bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-500 ease-in-out"
-                style={{
-                  transform: `translateX(-${currentIndex * 100}%) scale(${currentIndex === index ? '1' : '0.95'})`,
-                  opacity: currentIndex === index ? '1' : '0.5',
-                  animation: `fadeSlideIn 0.7s ease-out ${index * 0.2}s backwards`
-                }}
-              >
-                <Quote className="h-12 w-12 text-gray-200 mb-4" />
-                <p className="text-gray-700 mb-6 relative">
-                  {review.text}
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">{review.reviewer_name}</span>
-                  <span className="text-gray-500">
-                    {new Date(review.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long'
-                    })}
-                  </span>
-                </div>
-              </Card>
+          <div className="absolute top-1/2 -translate-y-1/2 -right-4 md:-right-8 z-10">
+            <Button 
+              onClick={handleNext}
+              variant="ghost" 
+              size="icon"
+              className="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 md:w-12 md:h-12 text-white shadow-lg"
+              aria-label="Next review"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </Button>
+          </div>
+
+          {/* Review cards */}
+          <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-3'} gap-6`}>
+            {visibleReviews.map((index) => {
+              const review = reviews[index];
+              return (
+                <Card 
+                  key={index}
+                  className="bg-white/95 backdrop-blur-sm shadow-xl rounded-xl overflow-hidden transform transition-all duration-500"
+                >
+                  {/* Card header with quote icon and rating */}
+                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4">
+                    <div className="flex justify-between items-center">
+                      <Quote className="h-8 w-8 text-white/80" />
+                      <div className="flex">
+                        {renderStars()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card body with review content */}
+                  <div className="p-6">
+                    <p className="text-gray-700 mb-6 italic">
+                      "{review.text}"
+                    </p>
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pt-4 border-t border-gray-100">
+                      <span className="font-semibold text-gray-900">
+                        {review.reviewer_name}
+                      </span>
+                      <span className="text-gray-500 text-sm">
+                        {new Date(review.date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long'
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Pagination indicators */}
+          <div className="flex justify-center mt-8 gap-2">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 
+                  ${activeIndex === index ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/60'}`}
+                aria-label={`Go to review ${index + 1}`}
+                aria-current={activeIndex === index ? 'true' : 'false'}
+              />
             ))}
           </div>
         </div>
 
-        {reviews.length >= 5 && (
-          <div className="text-center mt-8">
+        {/* CTA button */}
+        {reviews.length > 3 && (
+          <div className="text-center mt-12">
             <Button
               variant="outline"
-              className="bg-white hover:bg-gray-100 transition-transform hover:scale-105"
+              className="bg-white text-indigo-800 hover:bg-blue-50 px-6 py-2 rounded-full transition-all duration-300 font-medium"
             >
-              Read All Reviews
+              View All {reviews.length} Reviews
             </Button>
           </div>
         )}
       </div>
-
-      <style jsx global>{`
-        @keyframes float {
-          from { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-          to { transform: translateY(0); }
-        }
-
-        @keyframes fadeSlideIn {
-          from {
-            opacity: 0;
-            transform: translateX(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-      `}</style>
     </section>
   );
 }
