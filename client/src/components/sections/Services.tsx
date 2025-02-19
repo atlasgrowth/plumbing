@@ -8,6 +8,17 @@ interface ServicesProps {
   businessData: BusinessData;
 }
 
+const createLink = (path: string): string => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const siteId = urlParams.get('site_id');
+  const newPath = path + (siteId ? `?site_id=${siteId}` : '');
+  // Check if we're on GitHub Pages
+  const isGitHubPages = window.location.hostname.includes('github.io');
+  const basePath = isGitHubPages ? '/plumbing' : '';
+  return basePath + newPath;
+};
+
+
 export function Services({ businessData }: ServicesProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -102,13 +113,7 @@ export function Services({ businessData }: ServicesProps) {
                     if (service.type === 'scroll') {
                       document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
                     } else if (service.type === 'page') {
-                      const urlParams = new URLSearchParams(window.location.search);
-                      const siteId = urlParams.get('site_id');
-                      const newPath = service.link + (siteId ? `?site_id=${siteId}` : '');
-                      // Check if we're on GitHub Pages
-                      const isGitHubPages = window.location.hostname.includes('github.io');
-                      const basePath = isGitHubPages ? '/plumbing' : '';
-                      window.location.href = basePath + newPath;
+                      window.location.href = createLink(service.link);
                     }
                   }}
                 >
