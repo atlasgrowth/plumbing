@@ -35,10 +35,10 @@ export function Reviews({ businessData }: ReviewsProps) {
   `;
 
   return (
-    <section className="relative bg-gradient-to-r from-[#0A2F73] to-[#1E5799] py-20 md:py-40 overflow-hidden">
+    <section className="relative bg-gradient-to-r from-[#051C45] to-[#0A2F73] py-20 md:py-40 overflow-hidden">
       {/* Water pattern overlay */}
       <div 
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-15"
         style={{
           backgroundImage: `url("data:image/svg+xml;base64,${btoa(waterPatternSvg)}")`,
           backgroundRepeat: 'repeat',
@@ -75,9 +75,10 @@ export function Reviews({ businessData }: ReviewsProps) {
             {reviews.slice(currentIndex, currentIndex + (useCarousel ? 1 : 2)).map((review, index) => (
               <Card 
                 key={index} 
-                className="flex-shrink-0 w-full md:w-1/2 p-8 mx-4 bg-white/95 backdrop-blur-sm shadow-xl transition-transform duration-500"
+                className="flex-shrink-0 w-full md:w-1/2 p-8 mx-4 bg-white/95 backdrop-blur-sm shadow-xl transition-all duration-500 ease-in-out"
                 style={{
-                  transform: `translateX(-${currentIndex * 100}%)`,
+                  transform: `translateX(-${currentIndex * 100}%) scale(${currentIndex === index ? '1' : '0.95'})`,
+                  opacity: currentIndex === index ? '1' : '0.5',
                   animation: `fadeSlideIn 0.7s ease-out ${index * 0.2}s backwards`
                 }}
               >

@@ -9,10 +9,10 @@ interface MapProps {
 export function Map({ businessData }: MapProps) {
   const { name, latitude, longitude, working_hours, phone, city } = businessData.basic_info;
 
-  // Generate a static map image using OpenStreetMap's static map service
-  const staticMapUrl =
+  // Generate a dynamic map URL using MapBox (more reliable than OpenStreetMap)
+  const mapUrl =
     latitude && longitude
-      ? `https://staticmap.openstreetmap.de/staticmap.php?center=${latitude},${longitude}&zoom=14&size=600x400&markers=${latitude},${longitude},red-pushpin`
+      ? `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+FF0000(${longitude},${latitude})/${longitude},${latitude},13,0/600x400@2x?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA`
       : null;
 
   return (
@@ -23,9 +23,10 @@ export function Map({ businessData }: MapProps) {
             {staticMapUrl ? (
               <div className="relative w-full h-full rounded-lg overflow-hidden shadow-lg transition-transform duration-300 group-hover:scale-[1.02]">
                 <img
-                  src={staticMapUrl}
+                  src={mapUrl}
                   alt="Map of service area"
                   className="w-full h-full object-cover rounded-lg"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 border-4 border-primary/10 rounded-lg pointer-events-none" />
               </div>
