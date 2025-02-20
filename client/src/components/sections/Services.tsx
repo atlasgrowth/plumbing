@@ -122,8 +122,9 @@ export function Services({ businessData }: ServicesProps) {
                       const siteId = urlParams.get('site_id');
                       const isGitHubPages = window.location.hostname.includes('github.io');
                       const basePath = isGitHubPages ? '/plumbing' : '';
-                      const fullPath = `${basePath}${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
-                      window.location.href = fullPath;
+                      const fullPath = `${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
+                      window.history.pushState({}, '', `${basePath}${fullPath}`);
+                      window.dispatchEvent(new PopStateEvent('popstate'));
                     }
                   }}
                 >
