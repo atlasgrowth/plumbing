@@ -1,14 +1,17 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>Redirecting...</title>
   <script>
-    const segment = 1;
+    // Capture both path and query parameters
     const path = window.location.pathname;
+    const query = window.location.search;
     localStorage.setItem('path', path);
-    window.location.href = `/plumbing/`;
+    localStorage.setItem('query', query);
+    
+    // Redirect to base path while preserving query parameters
+    window.location.href = `/plumbing/${query}`;
   </script>
 </head>
 <body>
