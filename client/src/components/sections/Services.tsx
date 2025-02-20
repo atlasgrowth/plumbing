@@ -120,9 +120,9 @@ export function Services({ businessData }: ServicesProps) {
                     } else if (service.type === 'page') {
                       const urlParams = new URLSearchParams(window.location.search);
                       const siteId = urlParams.get('site_id');
-                      const isGitHubPages = window.location.pathname.includes('/plumbing');
+                      const isGitHubPages = window.location.hostname.includes('github.io');
                       const basePath = isGitHubPages ? '/plumbing' : '';
-                      const newPath = `${basePath}${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
+                      const newPath = `${window.location.protocol}//${window.location.host}${basePath}${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
                       window.location.href = newPath;
                     }
                   }}
