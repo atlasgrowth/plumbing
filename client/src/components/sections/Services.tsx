@@ -121,8 +121,9 @@ export function Services({ businessData }: ServicesProps) {
                       const urlParams = new URLSearchParams(window.location.search);
                       const siteId = urlParams.get('site_id');
                       const isGitHubPages = window.location.hostname.includes('github.io');
-                      const basePath = isGitHubPages ? '/plumbing' : '';
-                      const newPath = `${window.location.protocol}//${window.location.host}${basePath}${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
+                      const newPath = isGitHubPages 
+                        ? `/plumbing${service.link}${siteId ? `?site_id=${siteId}` : ''}`
+                        : `${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
                       window.location.href = newPath;
                     }
                   }}
