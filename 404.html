@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <title>Redirecting...</title>
   <script>
-    // Capture both path and query parameters
+    // Capture path and query separately
     const path = window.location.pathname;
     const query = window.location.search;
-    localStorage.setItem('path', path);
-    localStorage.setItem('query', query);
+    localStorage.setItem('redirect_path', path);
+    localStorage.setItem('redirect_query', query);
     
-    // Redirect to base path while preserving query parameters
-    window.location.href = `/plumbing/${query}`;
+    // Always redirect to base with no parameters
+    window.location.href = "/plumbing/";
   </script>
 </head>
 <body>
