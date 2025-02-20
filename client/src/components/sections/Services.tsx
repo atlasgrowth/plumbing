@@ -118,12 +118,8 @@ export function Services({ businessData }: ServicesProps) {
                     if (service.type === 'scroll') {
                       document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
                     } else if (service.type === 'page') {
-                      const urlParams = new URLSearchParams(window.location.search);
-                      const siteId = urlParams.get('site_id');
-                      const isGitHubPages = window.location.hostname.includes('github.io');
-                      const basePath = isGitHubPages ? '/plumbing' : '';
-                      const fullPath = `${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
-                      window.history.pushState({}, '', `${basePath}${fullPath}`);
+                      // Use the createLink helper to preserve site_id from localStorage if necessary.
+                      window.history.pushState({}, '', createLink(service.link));
                       window.dispatchEvent(new PopStateEvent('popstate'));
                     }
                   }}
