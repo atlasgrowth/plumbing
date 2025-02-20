@@ -118,7 +118,8 @@ export function Services({ businessData }: ServicesProps) {
                     if (service.type === 'scroll') {
                       document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
                     } else if (service.type === 'page') {
-                      window.location.href = createLink(service.link);
+                      const link = createLink(service.link);
+                      window.location.href = link;
                     }
                   }}
                 >
