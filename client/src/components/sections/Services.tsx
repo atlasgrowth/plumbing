@@ -118,8 +118,12 @@ export function Services({ businessData }: ServicesProps) {
                     if (service.type === 'scroll') {
                       document.querySelector(service.link)?.scrollIntoView({ behavior: 'smooth' });
                     } else if (service.type === 'page') {
-                      const link = createLink(service.link);
-                      window.location.href = link;
+                      const urlParams = new URLSearchParams(window.location.search);
+                      const siteId = urlParams.get('site_id');
+                      const isGitHubPages = window.location.pathname.includes('/plumbing');
+                      const basePath = isGitHubPages ? '/plumbing' : '';
+                      const newPath = `${basePath}${service.link}${siteId ? `?site_id=${siteId}` : ''}`;
+                      window.location.href = newPath;
                     }
                   }}
                 >
